@@ -41,23 +41,6 @@ const readCMDArgs = cmdLine => {
   return args
 }
 
-// Terrible hack to register chrome URIs but unfortunately we don't have any better option.
-const registerChrome = (name, path) => {
-  Cm.QueryInterface(Ci.nsIComponentRegistrar);
-  const { FileUtils } = Cu.import("resource://gre/modules/FileUtils.jsm", {})
-  const file = FileUtils.getFile("TmpD", [`${name}.manifest`], true)
-  const stream = FileUtils.openAtomicFileOutputStream(file)
-  const converter = Cc["@mozilla.org/intl/converter-output-stream;1"].
-                      createInstance(Ci.nsIConverterOutputStream)
-
-  converter.init(stream, "UTF-8", 0, 0)
-  converter.writeString(`content ${name} ${path}\n`)
-  FileUtils.closeAtomicFileOutputStream(stream)
-
-  dump(`register chrome: content ${name} ${path}\n`)
-  Cm.autoRegister(file)
-}
-
 // Utility function that synchronously reads local resource from the given
 // `uri` and returns content string.
 const readURI = (uri, charset="UTF-8") => {
@@ -245,20 +228,6 @@ const startDebugger = port => {
   listener.open();
 }
 
-const addBrowserManifst = () => {
-  const file = Cc["@mozilla.org/file/directory_service;1"]
-                .getService(Ci.nsIProperties)
-                .get("GreD", Ci.nsIFile)
-
-  file.append("browser")
-  file.append("chrome.manifest")
-
-
-  dump(`Register manifest at ${file.path}\n`)
-  Cm.QueryInterface(Ci.nsIComponentRegistrar)
-    .autoRegister(file)
-}
-
 const CommandLineHandler = function() {}
 CommandLineHandler.prototype = {
   constructor: CommandLineHandler,
@@ -266,8 +235,6 @@ CommandLineHandler.prototype = {
   QueryInterface: XPCOMUtils.generateQI([Ci.nsICommandLineHandler]),
   helpInfo : "/path/to/firefox -app /path/to/fierbox /path/to/app-package",
   handle: cmdLine => {
-    addBrowserManifst()
-
     const args = readCMDArgs(cmdLine)
     const rootURI = cmdLine.resolveURI(args[0]).spec
     launch(rootURI, args)

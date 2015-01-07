@@ -1,55 +1,51 @@
 # Firebox
 
-Application runtime shared with [Firefox][] that can be used to write cross platform desktop applications such as [Firefox][] using web technologies & [nodejs](http://nodejs.org/) style JS modules system. Firebox applications are [npm][] packages with a bundled HTML document gets to require modules from the package and it's dependencies.
+Application runtime shared with [Firefox][] that can be used to create
+cross platform desktop applications such as [Firefox][] itself using web technologies. Applications packages are just [Firefox OS Packged Apps][FxApps].
 
-## Features
-
-- Apps written in modern HTML5, CSS3, JS and WebGL.
-- Support for [nodejs][] style module system and with most node APIs exposed via modules.
-- Support for [XUL][]+[XPCOM][]+[JSCTypes][] to overcome webplatform limitations when necessary.
-- Easy to package and distribute apps.
-- Available on Linux, Mac OS X and Windows
 
 ## Usage
 
-For now you are required to have a Firefox [Nightly][] build to run firebox apps. Usage is little complicated for now but it's going to get better soon.
+Commonly you would install firebox as a `devDependency` of your npm package / application and run it as such:
 
 ```sh
-/Applications/FirefoxNightly.app/Contents/MacOS/firefox -app /path/to/firebox/application.ini /path/to/app/
+node ./node_modules/firebox/firebox.js ./manifest.webapp
 ```
 
-During development you may want to use debugger. You can start debugger by passing additional arguments:
+Argument passed is a path to an application [manifest](https://developer.mozilla.org/en-US/Apps/Build/Manifest) which is json file with information about the application (follow the link for details).
+
+Commonly one would also add a `start` script to `package.json` to just
+use `npm start` for lunching app.
+
+Please note that firebox expects to find a nightly build of firefox on your system in order to borrow it's runtime & will fail if it's not installed.
+
+
+It is also possible to just use Firefox [Nightly][] build by pointing it to firebox, although in that case usage is little more complicated:
 
 ```sh
-/Applications/FirefoxNightly.app/Contents/MacOS/firefox -app /path/to/firebox/application.ini /path/to/app/ -debugger 6000
+/Applications/FirefoxNightly.app/Contents/MacOS/firefox -app /path/to/firebox/application.ini /path/to/app/manifest.webapp
 ```
 
-Above comment will start debugger that will listen on port `6000`. You can connect to it via Firefox [WebIDE][] or via remote debugger by going to `Tools > WebDeveloper > Connect...`.
+As a matter of fact `firebox.js` script does the same it just finds a Firefox installation on the system.
 
-## Quick Start
 
-As a first step you would need to setup a npm package for your application, by creating `package.json` file, which can be as simple as:
+## Debugging
 
-```json
-{
-  "name": "hello-firebox"
-}
+During development you may want to use debugger, which is possible by passing additional arguments:
+
+```sh
+# using node
+node ./node_modules/firebox/firebox.js ./manifest.webapp --debugger 6000
+
+# using firefox
+/Applications/FirefoxNightly.app/Contents/MacOS/firefox -app /path/to/firebox/application.ini /path/to/app/manifest.webapp --debugger 6000
 ```
 
-Your application will need some UI which is defined in HTML/CSS/JS there for you would need to create `index.html` document. (If you'd prefer to have a different name for entry document, just add `launchPath` key to a `package.json` with a value that is a relative path to entry document with in your package).
+If application was lunched with a `--debugger` flag it will listen on given port (in this case `6000`) to which you can connect via Firefox [WebIDE][].
 
-```html
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Hello World!</title>
-  </head>
-  <body>
-    <h1>Hello World!</h1>
-    You have access to require <script>document.write(typeof(require))</script>.
-  </body>
-</html>
-```
+## Examples
+
+You can check actual [application example][symbiont] to see how all pieces fit together.
 
 
 [Firefox]:https://www.mozilla.org/en-US/firefox/desktop/
@@ -60,3 +56,5 @@ Your application will need some UI which is defined in HTML/CSS/JS there for you
 [JSCTypes]:https://developer.mozilla.org/en-US/docs/Mozilla/js-ctypes
 [Nightly]:https://nightly.mozilla.org/
 [WebIDE]:https://developer.mozilla.org/en-US/docs/Tools/WebIDE
+[FxApps]:https://developer.mozilla.org/en-US/Marketplace/Options/Packaged_apps
+[symbiont]:https://github.com/gozala/symbiont

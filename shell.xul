@@ -204,10 +204,10 @@
     <tooltip id="contentAreaTooltip" page="true" />
   </popupset>
 
-  <browser id="content"
-           type="content-primary"
-           flex="1"
-           context="contentAreaContextMenu"
-           tooltip="contentAreaTooltip"
-           transparent="true"/>
+  <iframe id="content"
+          type="content-primary"
+          transparent="true"
+          flex="1"
+          context="contentAreaContextMenu"
+          tooltip="contentAreaTooltip"/>
 </window>

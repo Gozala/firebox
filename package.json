@@ -1,7 +1,7 @@
 {
   "name": "firebox",
   "description": "SDK on top of Firefox for building desktop apps using HTML/CSS/JS",
-  "version": "0.0.0",
+  "version": "0.2.0",
   "keywords": [
     "firebox",
     "gecko",
@@ -39,5 +39,9 @@
       "version": "2.0",
       "url": "http://mozilla.org/MPL/2.0/"
     }
-  ]
+  ],
+  "dependencies": {
+    "es6-promise": "^2.0.1",
+    "winreg": "0.0.12"
+  }
 }
